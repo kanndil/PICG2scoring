@@ -33,12 +33,12 @@ print(f"There are {len(patients)} patients.")
 
 # train / val split
 # 10% as validation 
-# np.random.shuffle(patients)
-# train_num = int(len(patients)*0.9)
-# train_patients = patients[:train_num]
-# val_patients = patients[train_num:]
-train_patients = np.load('train_patient.npy')
-val_patients = np.load('val_patient.npy')
+np.random.shuffle(patients)
+train_num = int(len(patients)*0.9)
+train_patients = patients[:train_num]
+val_patients = patients[train_num:]
+#train_patients = np.load('train_patient.npy')
+#val_patients = np.load('val_patient.npy')
 
 train_df = df.loc[df['patient_ID'].apply(lambda x: x in train_patients)]
 val_df = df.loc[df['patient_ID'].apply(lambda x: x in val_patients)]
