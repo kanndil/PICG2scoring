@@ -6,7 +6,7 @@ import torchvision.transforms as tf
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-llama_dir = "."
+llama_dir = "../../drive/MyDrive/Llama7b"
 
 # choose from BIAS-7B, LORA-BIAS-7B, CAPTION-7B.pth
 model, preprocess = llama.load("BIAS-7B", llama_dir, '7B', device)
