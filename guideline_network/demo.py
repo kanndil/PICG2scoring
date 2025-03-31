@@ -13,7 +13,7 @@ model, preprocess = llama.load("BIAS-7B", llama_dir, '7B', device)
 model.eval()
 
 prompt = llama.format_prompt('Please introduce this painting.')
-img = Image.fromarray(cv2.imread("../docs/logo_v1.png"))
+img = Image.fromarray(cv2.imread("/docs/test.png"))
 t = tf.Compose(
     [
     tf.Resize((84, 84)),
