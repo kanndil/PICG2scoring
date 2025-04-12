@@ -150,12 +150,23 @@ def crop_to_bbox(image, mask):
 #############################################################################################
 
 
-def save_as_niigz(image, output_path):
+def save_as_niigz2(image, output_path):
     arr = sitk.GetArrayFromImage(image)
     affine = np.eye(4)
     nii_img = nib.Nifti1Image(arr, affine)
     nib.save(nii_img, output_path)
 
+
+def save_file(image, output_path):
+    # Convert SimpleITK image to NumPy array
+    arr = sitk.GetArrayFromImage(image)
+    
+    # Ensure output_path ends with .npy
+    if not output_path.endswith(".npy"):
+        output_path += ".npy"
+
+    # Save the array
+    np.save(output_path, arr)
 #############################################################################################
 
 
@@ -171,7 +182,7 @@ def process_modality(modality, stl_file, dicom_dir, base_path):
     image = load_dicom_series(dicom_dir)
     mask = stl_to_mask(stl_file, image)
     cropped = crop_to_bbox(image, mask)
-    save_as_niigz(cropped, f"{base_path}/{new_filename}.nii.gz")
+    save_file(cropped, f"{base_path}/{new_filename}.nii.gz")
 
 #############################################################################################
 
