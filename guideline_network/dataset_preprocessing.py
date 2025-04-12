@@ -238,8 +238,8 @@ def main():
                         help="The base directory where the dataset is stored")
     parser.add_argument('--stl_record_file', type=str, required=True, 
                         help="Path to the STL record CSV file")
-    parser.add_argument('--output_dir', type=str, default="case_input", 
-                        help="Directory to save the output (default: 'case_input')")
+    parser.add_argument('--output_dir', type=str, default="prostate/case_input", 
+                        help="Directory to save the output (default: 'prostate/case_input')")
 
     # Parse arguments
     args = parser.parse_args()
