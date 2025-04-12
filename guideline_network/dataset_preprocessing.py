@@ -182,7 +182,7 @@ def process_modality(modality, stl_file, dicom_dir, base_path):
     image = load_dicom_series(dicom_dir)
     mask = stl_to_mask(stl_file, image)
     cropped = crop_to_bbox(image, mask)
-    save_file(cropped, f"{base_path}/{new_filename}.nii.gz")
+    save_file(cropped, f"{base_path}/{new_filename}.npy")
 
 #############################################################################################
 
