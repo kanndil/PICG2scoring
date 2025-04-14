@@ -111,7 +111,8 @@ class ProstateDataset(FinetuneDataset):
         # set channel_num -> 1
         # normalize
         avg, std = 0.48, 0.27
-        self.transform = lambda x: (tf(torch.from_numpy(x)[None, None, ...]) / 255. - avg) / std
+        self.transform = lambda x: (tf(torch.from_numpy(x).float()[None, None, ...]) / 255. - avg) / std
+
 
     def __getitem__(self, index):
         data_item = self.ann[index]
