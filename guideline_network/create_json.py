@@ -21,7 +21,8 @@ INPUT = "Rate the lesion with a score from {1, 2, 3, 4, 5}."
 #     4: "high",
 #     5: "very high"
 # }
-ROOT = join("prostate", "case_input")
+#ROOT = join("prostate", "case_input")
+ROOT= "../../drive/MyDrive/Prostate_Cancer_Dataset/dataset/case_input"
 #####
 
 

@@ -18,7 +18,8 @@ INPUT = "What is the modality of this image? The answer must be from {T2W, non-T
 #     4: "high",
 #     5: "very high"
 # }
-ROOT = join("prostate", "case_input")
+#ROOT = join("prostate", "case_input")
+ROOT= "../../drive/MyDrive/Prostate_Cancer_Dataset/dataset/case_input"
 #####
 
 
