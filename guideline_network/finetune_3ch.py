@@ -81,6 +81,9 @@ def get_args_parser():
     parser.add_argument('--dist_on_itp', action='store_true')
     parser.add_argument('--dist_url', default='env://',
                         help='url used to set up distributed training')
+    
+    parser.add_argument('--train_step', default="one", type=str,
+                        help='train step, one or two')
 
     return parser
 
@@ -103,7 +106,7 @@ def main(args):
     llama_type = args.llama_type
     llama_ckpt_dir = os.path.join(args.llama_path, llama_type)
     llama_tokenzier_path = os.path.join(args.llama_path, 'tokenizer.model')
-    model = LLaMA_adapter(llama_ckpt_dir, llama_tokenzier_path)
+    model = LLaMA_adapter(llama_ckpt_dir, llama_tokenzier_path, train_step=args.train_step)
 
     model.to(device)
 

@@ -25,8 +25,11 @@ class LLaMA_adapter(nn.Module):
                  w_bias=False, 
                  w_lora=False, lora_rank=16, 
                  w_new_gate=False,
-                 phase="finetune"):
+                 phase="finetune", 
+                 train_step="one" ):
         super().__init__()
+        
+        self.train_step = train_step
 
         # load llama configs
         with open(os.path.join(llama_ckpt_dir, "params.json"), "r") as f:
@@ -105,9 +108,11 @@ class LLaMA_adapter(nn.Module):
 
         if phase == 'finetune':
             for name, para in self.named_parameters():
-                # if 'clip.visual.conv1' in name:
-                #     para.data = para.data.float()
-                #     para.requires_grad = True
+                if self.train_step == "one":
+                    if 'clip.visual.conv1' in name:
+                        para.data = para.data.float()
+                        para.requires_grad = True
+        
                 if name.startswith("llama."):
                     if 'norm' in name or 'bias' in name:
                         para.data = para.data.float()
