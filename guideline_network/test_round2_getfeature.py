@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-llama_dir = "."
+llama_dir = "../../drive/MyDrive/Llama7b"
 llama_type = '7B'
 llama_ckpt_dir = os.path.join(llama_dir, llama_type)
 llama_tokenzier_path = os.path.join(llama_dir, 'tokenizer.model')
