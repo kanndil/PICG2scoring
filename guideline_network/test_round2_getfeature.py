@@ -18,7 +18,7 @@ llama_ckpt_dir = os.path.join(llama_dir, llama_type)
 llama_tokenzier_path = os.path.join(llama_dir, 'tokenizer.model')
 model = LLaMA_adapter(llama_ckpt_dir, llama_tokenzier_path)
 
-misc.load_model(model, '/research/d1/rshr/ttzhang/multi-modal/prostate_finetune_100/checkpoint-60.pth')
+misc.load_model(model, '/content/drive/MyDrive/prostate_pretrain/checkpoint-0.pth')
 model.eval()
 model.to(device)
 INSTRUCT = {
