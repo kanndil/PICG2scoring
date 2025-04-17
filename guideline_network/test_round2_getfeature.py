@@ -153,7 +153,7 @@ def process_data(json_path, output_root):
         save_head = head.replace("case_input", output_root)
 
         os.makedirs(save_head, exist_ok=True)
-        feature_save_path = os.path.join(save_head, "feature_" + tail)
+        feature_save_path = os.path.join(save_head, tail)
 
         feature_tensor = save_feature[0]
         np.save(feature_save_path, feature_tensor.cpu().numpy())
