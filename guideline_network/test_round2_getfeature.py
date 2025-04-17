@@ -40,7 +40,8 @@ tf = torch.nn.Upsample(size=(84, 84, 98))
 # set channel_num -> 1
 # normalize
 avg, std = 0.48, 0.27
-transform = lambda x: (tf(torch.from_numpy(x)[None, None, ...]) / 255. - avg) / std
+transform = lambda x: (tf(torch.from_numpy(x).float()[None, None, ...]) / 255. - avg) / std
+
 
 cnter = 0
 if not os.path.exists("prostate/feature_input60/"):
