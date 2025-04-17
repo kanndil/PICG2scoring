@@ -72,11 +72,11 @@ for data_item in tqdm(data):
     result, save_feature = model.generate(img, [prompt])
     head, tail = os.path.split(data_item['img'])
     save_head = head.replace("case_input", "feature_input60")
-
- 
+    print (save_head)
+    if not os.path.exists(save_head):
+        os.mkdir(save_head)
     feature_save_path = os.path.join(save_head, "feature_"+tail)
-    if not os.path.exists(feature_save_path):
-        os.mkdir(feature_save_path)
+
     # for i in range(1, len(save_feature)):
     #     aaa = torch.cat([aaa, save_feature[i]], 1)
     aaa = save_feature[0]
