@@ -71,8 +71,9 @@ for data_item in tqdm(data):
     # result = model.generate(img, [prompt])[0]
     result, save_feature = model.generate(img, [prompt])
     head, tail = os.path.split(data_item['img'])
+    print ("---------------",head)
     save_head = head.replace("case_input", "feature_input60")
-    print (save_head)
+    print ("---------------",save_head)
     if not os.path.exists(save_head):
         os.mkdir(save_head)
     feature_save_path = os.path.join(save_head, "feature_"+tail)
