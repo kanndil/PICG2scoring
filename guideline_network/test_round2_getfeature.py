@@ -75,7 +75,7 @@ for data_item in tqdm(data):
     save_head = head.replace("case_input", "feature_input60")
     print ("---------------",save_head)
     if not os.path.exists(save_head):
-        os.mkdir(save_head)
+        os.makedirs(save_head, exist_ok=True)
     feature_save_path = os.path.join(save_head, "feature_"+tail)
 
     # for i in range(1, len(save_feature)):
