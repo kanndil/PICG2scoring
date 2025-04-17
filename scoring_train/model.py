@@ -111,7 +111,7 @@ def generate_model(opt):
 def load_pretrained_model(model, pretrain_path):
     if pretrain_path:
         print('loading pretrained model {}'.format(pretrain_path))
-        pretrain = torch.load(pretrain_path, map_location='cpu')
+        pretrain = torch.load(pretrain_path, map_location='cpu', weights_only=False)
 
         #choice one
         from collections import OrderedDict
