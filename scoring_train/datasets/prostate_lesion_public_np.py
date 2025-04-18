@@ -90,9 +90,9 @@ class Prostate_lesionDataset_public(Dataset):
             img_array = self.__nii2tensorarray__(T2W_array, ADC_array, DWI_array)
 
             feature_dir = self.root_dir.replace("public_case_input", "feature_input60")
-            T2W_name2 = feature_dir + "/" + case_name + "/feature_" + case_name + "_T2W_Target" +  target_id + ".npy"
-            ADC_name2 = feature_dir + "/" + case_name + "/feature_" + case_name + "_ADC_Target" +  target_id + ".npy"
-            DWI_name2 = feature_dir + "/" + case_name + "/feature_" + case_name + "_DWI_Target" +  target_id + ".npy"
+            T2W_name2 = feature_dir + "/" + case_name + "/" + case_name + "_T2W_Target" +  target_id + ".npy"
+            ADC_name2 = feature_dir + "/" + case_name + "/" + case_name + "_ADC_Target" +  target_id + ".npy"
+            DWI_name2 = feature_dir + "/" + case_name + "/" + case_name + "_DWI_Target" +  target_id + ".npy"
 
             T2W2 = np.load(T2W_name2)
             ADC2 = np.load(ADC_name2)
@@ -132,9 +132,9 @@ class Prostate_lesionDataset_public(Dataset):
             img_array = self.__nii2tensorarray__(T2W_array, ADC_array, DWI_array)
 
             feature_dir = self.root_dir.replace("public_case_input", "feature_input60")
-            T2W_name2 = feature_dir + "/" + case_name + "/feature_" + case_name + "_T2W_Target" +  target_id + ".npy"
-            ADC_name2 = feature_dir + "/" + case_name + "/feature_" + case_name + "_ADC_Target" +  target_id + ".npy"
-            DWI_name2 = feature_dir + "/" + case_name + "/feature_" + case_name + "_DWI_Target" +  target_id + ".npy"
+            T2W_name2 = feature_dir + "/" + case_name + "/" + case_name + "_T2W_Target" +  target_id + ".npy"
+            ADC_name2 = feature_dir + "/" + case_name + "/" + case_name + "_ADC_Target" +  target_id + ".npy"
+            DWI_name2 = feature_dir + "/" + case_name + "/" + case_name + "_DWI_Target" +  target_id + ".npy"
 
             T2W2 = np.load(T2W_name2)
             ADC2 = np.load(ADC_name2)
