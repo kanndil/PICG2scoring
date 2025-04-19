@@ -115,9 +115,9 @@ class Prostate_lesionDataset_public(Dataset):
             # read image
             case_name = self.test_nimage_list[idx].split('-Target')[0]
             target_id = self.test_nimage_list[idx].split('-Target')[1]
-            T2W_name = self.root_dir + "/" + case_name + "/" + case_name + "_T2W_Target" +  target_id + ".nii.gz"
-            ADC_name = self.root_dir + "/" + case_name + "/" + case_name + "_ADC_Target" +  target_id + ".nii.gz"
-            DWI_name = self.root_dir + "/" + case_name + "/" + case_name + "_DWI_Target" +  target_id + ".nii.gz"
+            T2W_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_T2W_Target" +  target_id + ".nii.gz"
+            ADC_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_ADC_Target" +  target_id + ".nii.gz"
+            DWI_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_DWI_Target" +  target_id + ".nii.gz"
 
             T2W = nibabel.load(T2W_name)
             ADC = nibabel.load(ADC_name)
@@ -131,7 +131,7 @@ class Prostate_lesionDataset_public(Dataset):
             # 2 tensor array
             img_array = self.__nii2tensorarray__(T2W_array, ADC_array, DWI_array)
 
-            feature_dir = self.root_dir.replace("public_case_input", "feature_input60")
+            feature_dir = self.root_test_dir.replace("public_case_input", "feature_input60")
             T2W_name2 = feature_dir + "/" + case_name + "/" + case_name + "_T2W_Target" +  target_id + ".npy"
             ADC_name2 = feature_dir + "/" + case_name + "/" + case_name + "_ADC_Target" +  target_id + ".npy"
             DWI_name2 = feature_dir + "/" + case_name + "/" + case_name + "_DWI_Target" +  target_id + ".npy"
@@ -151,10 +151,9 @@ class Prostate_lesionDataset_public(Dataset):
             return img_array, target
         else:
             case_name = self.inf_nimage_list[idx]
-            feature_dir = self.root_test_dir.replace("public_case_input", "feature_input60")
-            T2W_name = feature_dir + "/" + case_name + "/" + case_name + "_T2W.npy" 
-            ADC_name = feature_dir + "/" + case_name + "/" + case_name + "_ADC.npy" 
-            DWI_name = feature_dir + "/" + case_name + "/" + case_name + "_DWI.npy"
+            T2W_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_T2W.npy" 
+            ADC_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_ADC.npy" 
+            DWI_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_DWI.npy"
 
             T2W = np.load(T2W_name)
             ADC = np.load(ADC_name)
