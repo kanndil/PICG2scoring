@@ -151,9 +151,10 @@ class Prostate_lesionDataset_public(Dataset):
             return img_array, target
         else:
             case_name = self.inf_nimage_list[idx]
-            T2W_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_T2W.npy" 
-            ADC_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_ADC.npy" 
-            DWI_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_DWI.npy"
+            feature_dir = self.root_test_dir.replace("public_case_input", "feature_input60")
+            T2W_name = feature_dir + "/" + case_name + "/" + case_name + "_T2W.npy" 
+            ADC_name = feature_dir + "/" + case_name + "/" + case_name + "_ADC.npy" 
+            DWI_name = feature_dir + "/" + case_name + "/" + case_name + "_DWI.npy"
 
             T2W = np.load(T2W_name)
             ADC = np.load(ADC_name)
