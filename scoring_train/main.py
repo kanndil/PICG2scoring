@@ -17,7 +17,7 @@ import torch.nn.functional as F
 from torch.utils.data import WeightedRandomSampler
 from torchsampler import ImbalancedDatasetSampler
 from collections import Counter
-
+import matplotlib.pyplot as plt
 from opts import parse_opts
 from model import (generate_model, load_pretrained_model, make_data_parallel,
                    get_fine_tuning_parameters)
@@ -461,6 +461,10 @@ def main_worker(index, opt):
 
     prev_val_loss = None
     current_val_acc = 0
+    val_acc_history = []
+    val_loss_history = []
+    current_val_acc = 0.0
+    current_val_loss = float('inf')
     for i in range(opt.begin_epoch, opt.n_epochs + 1):
         if not opt.no_train:
             if opt.distributed:
@@ -476,21 +480,60 @@ def main_worker(index, opt):
             prev_val_loss, prev_val_acc, prev_val_mse= val_epoch(i, val_loader, model, criterion,
                                       opt.device, val_logger, tb_writer,
                                       opt.distributed)
+            val_loss_history.append(prev_val_loss)
+            val_acc_history.append(prev_val_acc)
+
             if not opt.no_train:
+                if prev_val_acc >= current_val_acc:
+                    best_path = opt.result_path / 'best_acc.pth'
+                    save_checkpoint(best_path, i, opt.arch, model, optimizer, scheduler)
+                    current_val_acc = prev_val_acc
+
+                # Save best loss
+                if prev_val_loss <= current_val_loss:
+                    best_loss_path = opt.result_path / 'best_loss.pth'
+                    save_checkpoint(best_loss_path, i, opt.arch, model, optimizer, scheduler)
+                    current_val_loss = prev_val_loss
+                
                 if (prev_val_acc >= current_val_acc and opt.is_master_node and i >100) or (prev_val_acc >= 0.5 and opt.is_master_node and i >100):
                     save_file_path = opt.result_path / 'save_{}.pth'.format(i)
                     save_checkpoint(save_file_path, i, opt.arch, model, optimizer,
                                     scheduler)
                     current_val_acc = prev_val_acc
-
-
-
+                    
+        
 
         if not opt.no_train and opt.lr_scheduler == 'multistep':
             scheduler.step()
         elif not opt.no_train and opt.lr_scheduler == 'plateau':
             scheduler.step(prev_val_loss)
 
+
+
+    # Plot accuracy
+    plt.figure(figsize=(10, 4))
+    plt.plot(val_acc_history, label='Validation Accuracy', color='green')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title('Validation Accuracy over Epochs')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(opt.result_path / 'val_accuracy.png')
+    plt.close()
+
+    # Plot loss
+    plt.figure(figsize=(10, 4))
+    plt.plot(val_loss_history, label='Validation Loss', color='red')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Validation Loss over Epochs')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(opt.result_path / 'val_loss.png')
+    plt.close()
+    
     if opt.inference:
         inference_loader, inf_logger, inf_json = get_inference_utils(opt)
 
