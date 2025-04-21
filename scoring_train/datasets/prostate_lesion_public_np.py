@@ -293,6 +293,23 @@ class Prostate_lesionDataset_public(Dataset):
         T2W = np.transpose(T2W, [2, 0, 1])
         ADC = np.transpose(ADC, [2, 0, 1])
         DWI = np.transpose(DWI, [2, 0, 1])
+        
+        
+        
+        # Add horizontal and vertical shifting (10% of dimensions)
+        if random() > 0.5:  # Horizontal shift
+            shift_x = int(0.1 * T2W.shape[1])  # 10% of width
+            shift_x = np.random.randint(-shift_x, shift_x + 1)
+            T2W = np.roll(T2W, shift_x, axis=1)
+            ADC = np.roll(ADC, shift_x, axis=1)
+            DWI = np.roll(DWI, shift_x, axis=1)
+        if random() > 0.5:  # Vertical shift
+            shift_y = int(0.1 * T2W.shape[0])  # 10% of height
+            shift_y = np.random.randint(-shift_y, shift_y + 1)
+            T2W = np.roll(T2W, shift_y, axis=0)
+            ADC = np.roll(ADC, shift_y, axis=0)
+            DWI = np.roll(DWI, shift_y, axis=0)
+
 
         if self.center_crop:
 

@@ -32,12 +32,39 @@ PROMPT_DICT = {
     ),
 }
 
-# create data
+## create data
+#transform_train = transforms.Compose([
+#    transforms.RandomResizedCrop(size=(224, 224), scale=(0.9, 1.0), ratio=(0.75, 1.3333), interpolation=BICUBIC,
+#                                 antialias=None),  # 3 is bicubic
+#    transforms.ToTensor(),
+#    transforms.Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])])
+
+
+
+
+# Define the transformation pipeline
 transform_train = transforms.Compose([
-    transforms.RandomResizedCrop(size=(224, 224), scale=(0.9, 1.0), ratio=(0.75, 1.3333), interpolation=BICUBIC,
-                                 antialias=None),  # 3 is bicubic
+    # Random rotation: rotate the image by a random angle within the given range (-degrees, +degrees)
+    transforms.RandomRotation(degrees=30, resample=InterpolationMode.BICUBIC),  # Adjust 'degrees' as needed
+    
+    # Horizontal flip: randomly flip the image along the vertical axis
+    transforms.RandomHorizontalFlip(p=0.5),  # p is the probability of flipping
+    
+    # Vertical flip: randomly flip the image along the horizontal axis
+    transforms.RandomVerticalFlip(p=0.5),  # p is the probability of flipping
+    
+    # Random Resized Crop: resize and crop the image to a random size
+    transforms.RandomResizedCrop(size=(224, 224), scale=(0.9, 1.0), ratio=(0.75, 1.3333), interpolation=InterpolationMode.BICUBIC),
+    
+    # Random translation (shifting) of the image in both horizontal and vertical directions
+    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),  # translate=(x_fraction, y_fraction), e.g., 0.1 means a 10% shift
+    
+    # Convert the image to a tensor
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])])
+    
+    # Normalize the image with the given mean and std values for RGB channels
+    transforms.Normalize(mean=[0.48145466, 0.4578275, 0.40821073], std=[0.26862954, 0.26130258, 0.27577711])
+])
 
 class FinetuneDataset(Dataset):
     def __init__(self, config_path, transform, max_words=30, tokenizer_path=None):
