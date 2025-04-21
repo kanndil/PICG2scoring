@@ -45,7 +45,8 @@ PROMPT_DICT = {
 # Define the transformation pipeline
 transform_train = transforms.Compose([
     # Random rotation: rotate the image by a random angle within the given range (-degrees, +degrees)
-    transforms.RandomRotation(degrees=30, resample=InterpolationMode.BICUBIC),  # Adjust 'degrees' as needed
+    transforms.RandomRotation(degrees=30, interpolation=InterpolationMode.BICUBIC),
+
     
     # Horizontal flip: randomly flip the image along the vertical axis
     transforms.RandomHorizontalFlip(p=0.5),  # p is the probability of flipping
