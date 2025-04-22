@@ -78,7 +78,7 @@ def parse_opts():
                         help='KL or CE')
     parser.add_argument(
         '--center_crop',
-        default=True,
+        default=False,
         type=bool,
         help='data augmentation'
     )
