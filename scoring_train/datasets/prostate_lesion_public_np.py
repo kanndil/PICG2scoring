@@ -323,9 +323,9 @@ class Prostate_lesionDataset_public(Dataset):
 
                 # center crop
 
-                T2W = self.__crop_data__(T2W, rzmin, rzmax, rymin, rymax, rxmin, rxmax)
-                ADC = self.__crop_data__(ADC, rzmin, rzmax, rymin, rymax, rxmin, rxmax)
-                DWI = self.__crop_data__(DWI, rzmin, rzmax, rymin, rymax, rxmin, rxmax)
+                T2W = self.__random_center_crop__(T2W, rzmin, rzmax, rymin, rymax, rxmin, rxmax)
+                ADC = self.__random_center_crop__(ADC, rzmin, rzmax, rymin, rymax, rxmin, rxmax)
+                DWI = self.__random_center_crop__(DWI, rzmin, rzmax, rymin, rymax, rxmin, rxmax)
 
 
         # resize data
