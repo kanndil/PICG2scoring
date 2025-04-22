@@ -17,9 +17,6 @@ import torch.nn.functional as F
 from torch.utils.data import WeightedRandomSampler
 from torchsampler import ImbalancedDatasetSampler
 from collections import Counter
-import matplotlib
-matplotlib.use('Agg')  # Set backend before importing pyplot
-import matplotlib.pyplot as plt
 
 
 from opts import parse_opts
@@ -35,6 +32,8 @@ from utils import Logger, worker_init_fn, get_lr
 from training import train_epoch
 from validation import val_epoch
 import inference
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 class MultiClassFocalLossWithAlpha(nn.Module):
     def __init__(self, alpha=[0.2, 0.3, 0.5], gamma=2, reduction='mean'):
@@ -513,31 +512,21 @@ def main_worker(index, opt):
             scheduler.step(prev_val_loss)
 
 
+    fig = make_subplots(rows=1, cols=2, subplot_titles=("Validation Accuracy", "Validation Loss"))
 
-    # Plot accuracy
-    plt.figure(figsize=(10, 4))
-    plt.plot(val_acc_history, label='Validation Accuracy', color='green')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.title('Validation Accuracy over Epochs')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(opt.result_path / 'val_accuracy.png')
-    plt.close()
+    # Accuracy plot
+    fig.add_trace(go.Scatter(y=val_acc_history, mode='lines+markers', name='Accuracy', line=dict(color='green')), row=1, col=1)
 
-    # Plot loss
-    plt.figure(figsize=(10, 4))
-    plt.plot(val_loss_history, label='Validation Loss', color='red')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.title('Validation Loss over Epochs')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(opt.result_path / 'val_loss.png')
-    plt.close()
-    
+    # Loss plot
+    fig.add_trace(go.Scatter(y=val_loss_history, mode='lines+markers', name='Loss', line=dict(color='red')), row=1, col=2)
+
+    fig.update_layout(height=400, width=1000, title_text="Training Curves", showlegend=False)
+    fig.update_xaxes(title_text="Epoch", row=1, col=1)
+    fig.update_xaxes(title_text="Epoch", row=1, col=2)
+    fig.update_yaxes(title_text="Accuracy", row=1, col=1)
+    fig.update_yaxes(title_text="Loss", row=1, col=2)
+
+    fig.show()
     if opt.inference:
         inference_loader, inf_logger, inf_json = get_inference_utils(opt)
 
