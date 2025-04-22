@@ -17,7 +17,11 @@ import torch.nn.functional as F
 from torch.utils.data import WeightedRandomSampler
 from torchsampler import ImbalancedDatasetSampler
 from collections import Counter
+import matplotlib
+matplotlib.use('Agg')  # Set backend before importing pyplot
 import matplotlib.pyplot as plt
+
+
 from opts import parse_opts
 from model import (generate_model, load_pretrained_model, make_data_parallel,
                    get_fine_tuning_parameters)
