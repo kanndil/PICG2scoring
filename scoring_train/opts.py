@@ -96,7 +96,7 @@ def parse_opts():
     )
     parser.add_argument(
         '--resize_select',
-        default=True,
+        default=False,
         type=bool,
         help='data augmentation'
     )
