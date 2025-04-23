@@ -41,7 +41,7 @@ class resnet_lstm4_fle(torch.nn.Module):
         self.lstm = nn.LSTM(2048, 512, batch_first=True)
         self.fc1 = nn.Linear(512, 256)
         self.fc2 = nn.Linear(256, 4)
-        self.dropout = nn.Dropout(p=0.5)
+        self.dropout = nn.Dropout(p=0.3)
 
         init.xavier_normal_(self.lstm.all_weights[0][0])
         init.xavier_normal_(self.lstm.all_weights[0][1])
