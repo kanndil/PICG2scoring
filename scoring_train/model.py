@@ -102,8 +102,8 @@ def generate_model(opt):
                         depth = 6,
                         heads = 4,
                         mlp_dim = 1024,
-                        dropout = 0.3,
-                        emb_dropout = 0.3)
+                        dropout = 0.1,
+                        emb_dropout = 0.1)
 
     return model
 
