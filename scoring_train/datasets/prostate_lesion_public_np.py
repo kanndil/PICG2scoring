@@ -149,30 +149,52 @@ class Prostate_lesionDataset_public(Dataset):
             inp = inp.permute(2, 0, 1)
 
             return img_array, target
-        else:
+        
+        else:  # inference code
             case_name = self.inf_nimage_list[idx]
-            T2W_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_T2W.npy" 
-            ADC_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_ADC.npy" 
-            DWI_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_DWI.npy"
+            T2W_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_T2W.nii.gz"
+            ADC_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_ADC.nii.gz"
+            DWI_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_DWI.nii.gz"
 
-            T2W = np.load(T2W_name)
-            ADC = np.load(ADC_name)
-            DWI = np.load(DWI_name)
+            # Load using nibabel
+            T2W = nibabel.load(T2W_name)
+            ADC = nibabel.load(ADC_name)
+            DWI = nibabel.load(DWI_name)
 
-            target = self.inf_label_list[idx] - 1
+            target = self.inf_label_list[idx] - 1  # Ensure consistent label format
 
-            T2W = self.__resize_data__(T2W)
-            ADC = self.__resize_data__(ADC)
-            DWI = self.__resize_data__(DWI)
+            # Data processing (use the same as in test phase)
+            T2W_array, ADC_array, DWI_array = self.__testing_data_process__(T2W, ADC, DWI)
 
-            # normalization datas
-            T2W = self.__itensity_normalize_one_volume__(T2W)
-            ADC = self.__itensity_normalize_one_volume__(ADC)
-            DWI = self.__itensity_normalize_one_volume__(DWI)
+            # Convert to tensor array
+            img_array = self.__nii2tensorarray__(T2W_array, ADC_array, DWI_array)
 
-            # 2 tensor array
-            img_array = self.__nii2tensorarray__(T2W, ADC, DWI)
-            return img_array, self.inf_nimage_list[idx], target
+            return img_array, case_name, target
+
+        #else: # inference code 
+        #    case_name = self.inf_nimage_list[idx]
+        #    T2W_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_T2W.npy" 
+        #    ADC_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_ADC.npy" 
+        #    DWI_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_DWI.npy"
+
+        #    T2W = np.load(T2W_name)
+        #    ADC = np.load(ADC_name)
+        #    DWI = np.load(DWI_name)
+
+        #    target = self.inf_label_list[idx] - 1
+
+        #    T2W = self.__resize_data__(T2W)
+        #    ADC = self.__resize_data__(ADC)
+        #    DWI = self.__resize_data__(DWI)
+
+        #    # normalization datas
+        #    T2W = self.__itensity_normalize_one_volume__(T2W)
+        #    ADC = self.__itensity_normalize_one_volume__(ADC)
+        #    DWI = self.__itensity_normalize_one_volume__(DWI)
+
+        #    # 2 tensor array
+        #    img_array = self.__nii2tensorarray__(T2W, ADC, DWI)
+        #    return img_array, self.inf_nimage_list[idx], target
 
     def __random_center_crop__(self, data, rzmin, rzmax, rymin, rymax, rxmin, rxmax):
             # from random import random
