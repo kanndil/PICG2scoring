@@ -462,8 +462,8 @@ def main_worker(index, opt):
     else:
         tb_writer = None
 
-    prev_val_loss = None
-    current_val_acc = 0
+    prev_val_acc = 0.0
+    prev_val_loss = float('inf')
     val_acc_history = []
     val_loss_history = []
     current_val_acc = 0.0
@@ -480,24 +480,24 @@ def main_worker(index, opt):
 
 
         if not opt.no_val:
-            prev_val_loss, prev_val_acc, prev_val_mse= val_epoch(i, val_loader, model, criterion,
+            current_val_loss, current_val_acc, current_val_mse = val_epoch(i, val_loader, model, criterion,
                                       opt.device, val_logger, tb_writer,
                                       opt.distributed)
-            val_loss_history.append(prev_val_loss)
-            val_acc_history.append(prev_val_acc)
+            val_loss_history.append(current_val_loss)
+            val_acc_history.append(current_val_acc)
 
             if not opt.no_train:
                 if   current_val_acc > prev_val_acc:
                     best_path = opt.result_path / 'best_acc.pth'
                     save_checkpoint(best_path, i, opt.arch, model, optimizer, scheduler)
-                    current_val_acc = prev_val_acc
+                    prev_val_acc = current_val_acc
 
                 # Save best loss
                 if current_val_loss < prev_val_loss:
                     best_loss_path = opt.result_path / 'best_loss.pth'
                     save_checkpoint(best_loss_path, i, opt.arch, model, optimizer, scheduler)
-                    current_val_loss = prev_val_loss
-                    
+                    prev_val_loss = current_val_loss
+
                 #if (prev_val_acc > current_val_acc and opt.is_master_node and i >100) or (prev_val_acc >= 0.5 and opt.is_master_node and i >100):
                 #    save_file_path = opt.result_path / 'save_{}.pth'.format(i)
                 #    save_checkpoint(save_file_path, i, opt.arch, model, optimizer,
