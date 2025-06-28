@@ -487,24 +487,23 @@ def main_worker(index, opt):
             val_acc_history.append(prev_val_acc)
 
             if not opt.no_train:
-                if prev_val_acc >= current_val_acc:
+                if   current_val_acc > prev_val_acc:
                     best_path = opt.result_path / 'best_acc.pth'
                     save_checkpoint(best_path, i, opt.arch, model, optimizer, scheduler)
                     current_val_acc = prev_val_acc
 
                 # Save best loss
-                if prev_val_loss <= current_val_loss:
+                if current_val_loss < prev_val_loss:
                     best_loss_path = opt.result_path / 'best_loss.pth'
                     save_checkpoint(best_loss_path, i, opt.arch, model, optimizer, scheduler)
                     current_val_loss = prev_val_loss
-                
-                if (prev_val_acc >= current_val_acc and opt.is_master_node and i >100) or (prev_val_acc >= 0.5 and opt.is_master_node and i >100):
-                    save_file_path = opt.result_path / 'save_{}.pth'.format(i)
-                    save_checkpoint(save_file_path, i, opt.arch, model, optimizer,
-                                    scheduler)
-                    current_val_acc = prev_val_acc
                     
-        
+                #if (prev_val_acc > current_val_acc and opt.is_master_node and i >100) or (prev_val_acc >= 0.5 and opt.is_master_node and i >100):
+                #    save_file_path = opt.result_path / 'save_{}.pth'.format(i)
+                #    save_checkpoint(save_file_path, i, opt.arch, model, optimizer,
+                #                    scheduler)
+                #    current_val_acc = prev_val_acc
+                #    current_val_loss = prev_val_loss
 
         if not opt.no_train and opt.lr_scheduler == 'multistep':
             scheduler.step()
