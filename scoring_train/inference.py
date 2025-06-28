@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 
+from sklearn.metrics import classification_report, confusion_matrix
 from utils import AverageMeter, calculate_accuracy, calculate_precision_and_recall, calculate_mse_and_mae
 from scipy import stats
 
@@ -64,10 +65,8 @@ def inference(data_loader, model, logger, inf_json, device):
 
 
             outputs = F.softmax(outputs, dim=1)
-            # outputs = outputs.sigmoid().cpu()
-            outputs = outputs.cpu()
-            outputs_value = np.argmax(outputs)
-
+            outputs_cpu = outputs.cpu()
+            outputs_value = np.argmax(outputs_cpu.numpy(), axis=1)
 
             batch_time.update(time.time() - end_time)
             end_time = time.time()
@@ -80,30 +79,49 @@ def inference(data_loader, model, logger, inf_json, device):
                       len(data_loader),
                       batch_time=batch_time,
                       data_time=data_time,
-                        acc=accuracies))
-            targets_r = targets.cpu().numpy()[0].astype(np.float64)
-            outputs_value_r = outputs_value.numpy().astype(np.float64)
-            outputs_value_r = outputs_value_r.tolist()
-            outputs_r = outputs.cpu().numpy()[0]
-            outputs_r = list(outputs_r)
-            outputs_r = [float(i) for i in outputs_r]
-            acc_r = acc
-            # print(type(targets_r),type(outputs_value_r), type(outputs_r), type(outputs_r[0]), type(acc_r))
-            results['result'][image_name[0]].append({'target': targets_r, 'output_value': outputs_value_r, 'output': outputs_r, 'acc': acc_r, 'mse': mse, "mae": mae})
-            # results['result']['image_name'][i] = image_name[0]
-            # results['result']['target'][i] = targets.item()
-            # results['result']['output_value'][i] = outputs_value.item()
-            # results['result']['output'][i] = outputs.item()
-            # results['result']['acc'][i] = acc
-            s_predict.append(outputs_value.cpu().numpy())
-            s_target.append(targets.cpu().numpy())
-            logger.log({'image_name': image_name, 'target': targets.cpu().numpy(), 'output_value': outputs_value.cpu().numpy(), 'output': outputs.cpu().numpy(), 'acc': acc, 'mse': mse, "mae": mae})
+                      acc=accuracies))
 
-    s_predict = np.array(s_predict)
-    s_target = np.array(s_target)
-    res = stats.spearmanr(s_predict, s_target)
-    print(res.statistic)
+            targets_r = targets.cpu().numpy()
+            for j in range(targets_r.shape[0]):
+                image_id = image_name[j]
+                output_probs = outputs_cpu[j].numpy().tolist()
+                prediction = int(outputs_value[j])
+                target = int(targets_r[j])
+                results["result"][image_id].append({
+                    "target": target,
+                    "output_value": prediction,
+                    "output": [float(p) for p in output_probs],
+                    "acc": float(acc),
+                    "mse": float(mse),
+                    "mae": float(mae)
+                })
+
+            s_predict.append(outputs_value)
+            s_target.append(targets_r)
+            logger.log({
+                'image_name': image_name,
+                'target': targets_r,
+                'output_value': outputs_value,
+                'output': outputs_cpu.numpy(),
+                'acc': acc,
+                'mse': mse,
+                'mae': mae
+            })
+
+    # Flatten predictions and targets
+    flat_preds = np.concatenate(s_predict)
+    flat_targets = np.concatenate(s_target)
+
+    # Spearman Correlation
+    res = stats.spearmanr(flat_preds, flat_targets)
+    print("\nSpearman Correlation Coefficient:", res.statistic)
+
+    # Per-class evaluation
+    print("\nPer-class Evaluation:\n")
+    print(classification_report(flat_targets, flat_preds, digits=4))
+    print("Confusion Matrix:")
+    print(confusion_matrix(flat_targets, flat_preds))
+
+    # Save detailed results
     with inf_json.open('w') as f:
         json.dump(results, f, indent=4, ensure_ascii=False)
-
-
