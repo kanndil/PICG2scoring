@@ -392,13 +392,13 @@ def main_worker(index, opt):
     if opt.batchnorm_sync:
         assert opt.distributed, 'SyncBatchNorm only supports DistributedDataParallel.'
         model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    if opt.pretrain_path:
+    if opt.pretrain_path and not opt.resume_path:
         model = load_pretrained_model(model, opt.pretrain_path)
     if opt.resume_path is not None:
         model = resume_model(opt.resume_path, opt.arch, model)
     model = make_data_parallel(model, opt.distributed, opt.device)
 
-    if opt.pretrain_path:
+    if opt.pretrain_path and not opt.resume_path:
         parameters = get_fine_tuning_parameters(model, opt.ft_begin_module)
     else:
         parameters = model.parameters()
