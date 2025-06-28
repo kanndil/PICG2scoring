@@ -151,10 +151,11 @@ class Prostate_lesionDataset_public(Dataset):
             return img_array, target
         
         else:  # inference code
-            case_name = self.inf_nimage_list[idx]
-            T2W_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_T2W.nii.gz"
-            ADC_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_ADC.nii.gz"
-            DWI_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_DWI.nii.gz"
+            case_name = self.inf_nimage_list[idx].split('-Target')[0]
+            target_id = self.inf_nimage_list[idx].split('-Target')[1]
+            T2W_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_T2W_Target" +  target_id + ".nii.gz"
+            ADC_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_ADC_Target" +  target_id + ".nii.gz"
+            DWI_name = self.root_test_dir + "/" + case_name + "/" + case_name + "_DWI_Target" +  target_id + ".nii.gz"
 
             # Load using nibabel
             T2W = nibabel.load(T2W_name)
