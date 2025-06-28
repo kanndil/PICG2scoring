@@ -512,21 +512,24 @@ def main_worker(index, opt):
             scheduler.step(prev_val_loss)
 
 
-    fig = make_subplots(rows=1, cols=2, subplot_titles=("Validation Accuracy", "Validation Loss"))
+    if not opt.inference:
+        fig = make_subplots(rows=1, cols=2, subplot_titles=("Validation Accuracy", "Validation Loss"))
 
-    # Accuracy plot
-    fig.add_trace(go.Scatter(y=val_acc_history, mode='lines+markers', name='Accuracy', line=dict(color='green')), row=1, col=1)
+        # Accuracy plot
+        fig.add_trace(go.Scatter(y=val_acc_history, mode='lines+markers', name='Accuracy', line=dict(color='green')), row=1, col=1)
 
-    # Loss plot
-    fig.add_trace(go.Scatter(y=val_loss_history, mode='lines+markers', name='Loss', line=dict(color='red')), row=1, col=2)
+        # Loss plot
+        fig.add_trace(go.Scatter(y=val_loss_history, mode='lines+markers', name='Loss', line=dict(color='red')), row=1, col=2)
 
-    fig.update_layout(height=400, width=1000, title_text="Training Curves", showlegend=False)
-    fig.update_xaxes(title_text="Epoch", row=1, col=1)
-    fig.update_xaxes(title_text="Epoch", row=1, col=2)
-    fig.update_yaxes(title_text="Accuracy", row=1, col=1)
-    fig.update_yaxes(title_text="Loss", row=1, col=2)
+        fig.update_layout(height=400, width=1000, title_text="Training Curves", showlegend=False)
+        fig.update_xaxes(title_text="Epoch", row=1, col=1)
+        fig.update_xaxes(title_text="Epoch", row=1, col=2)
+        fig.update_yaxes(title_text="Accuracy", row=1, col=1)
+        fig.update_yaxes(title_text="Loss", row=1, col=2)
 
-    fig.show()
+        fig.show()
+        
+        
     if opt.inference:
         inference_loader, inf_logger, inf_json = get_inference_utils(opt)
 
